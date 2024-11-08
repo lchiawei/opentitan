@@ -182,7 +182,7 @@ def _build_binary(ctx, exec_env, name, deps, kind):
     ecdsa_key = get_fallback(ctx, "attr.ecdsa_key", exec_env)
     rsa_key = get_fallback(ctx, "attr.rsa_key", exec_env)
     spx_key = get_fallback(ctx, "attr.spx_key", exec_env)
-    if (manifest or rsa_key) and kind != "ram":
+    if (manifest or rsa_key) and kind != "ram" and not ctx.attr.skip_signing:
         if not (manifest and (rsa_key or ecdsa_key)):
             fail("Signing requires a manifest and an rsa_key or ecdsa_key, and optionally an spx_key")
         signed = sign_binary(
@@ -329,6 +329,7 @@ opentitan_binary = rv_rule(
             doc = "List of execution environments for this target.",
         ),
         "_cc_toolchain": attr.label(default = Label("@bazel_tools//tools/cpp:current_cc_toolchain")),
+        "skip_signing": attr.bool(default = False),
     }.items()),
     fragments = ["cpp"],
     toolchains = ["@rules_cc//cc:toolchain_type"],
@@ -435,6 +436,7 @@ opentitan_test = rv_rule(
             doc = "OpenOCD adapter configuration override for this test",
         ),
         "_cc_toolchain": attr.label(default = Label("@bazel_tools//tools/cpp:current_cc_toolchain")),
+        "skip_signing": attr.bool(default = False),
     }.items()),
     fragments = ["cpp"],
     toolchains = ["@rules_cc//cc:toolchain_type"],
