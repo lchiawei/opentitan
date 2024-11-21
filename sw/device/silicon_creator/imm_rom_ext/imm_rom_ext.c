@@ -58,6 +58,12 @@ static rom_error_t imm_rom_ext_start(void) {
 }
 
 void imm_rom_ext_main(void) {
-  // TODO(opentitan#24368): Implement this.
+  rom_error_t error = imm_rom_ext_start();
+  if (launder32(error) != kErrorOk) {
+    shutdown_finalize(error);
+  }
+  HARDENED_CHECK_EQ(error, kErrorOk);
+
+  // Go back to ROM / Mutable ROM_EXT.
   return;
 }
