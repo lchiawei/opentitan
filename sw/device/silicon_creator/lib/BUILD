@@ -143,6 +143,7 @@ cc_library(
         ":error",
         "//sw/device/lib/base:csr",
         "//sw/device/lib/base:hardened",
+        ":dbg_print",
     ],
 )
 

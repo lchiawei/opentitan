@@ -6,4 +6,5 @@
 IMM_ROM_EXT_TARGETS = {
     "nop": "//sw/device/silicon_creator/imm_rom_ext/prebuilts:nop_imm_rom_ext",
     "hello_world": "//sw/device/silicon_creator/imm_rom_ext:hello_world_section",
+    "main": "//sw/device/silicon_creator/imm_rom_ext:main_section",
 }

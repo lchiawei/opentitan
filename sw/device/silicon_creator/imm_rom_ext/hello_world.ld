@@ -10,13 +10,14 @@
 INCLUDE hw/top_earlgrey/sw/autogen/top_earlgrey_memory.ld
 
 /**
- * Symbols to be used in the setup of the address translation for ROM_EXT.
+ * Symbols to be used in the setup of the address translation for IMM_ROM_EXT.
  */
-_rom_ext_start_address = ORIGIN(rom_ext_virtual);
-_rom_ext_size = LENGTH(rom_ext_virtual);
-ASSERT((_rom_ext_size <= (LENGTH(eflash) / 2)), "Error: rom ext flash is bigger than slot");
 
-REGION_ALIAS("rom_ext_flash", rom_ext_virtual);
+MEMORY {
+  imm_rom_ext_virtual(rx) : ORIGIN = ORIGIN(rom_ext_virtual) + 0x400, LENGTH = 0x80000
+}
+
+REGION_ALIAS("rom_ext_flash", imm_rom_ext_virtual);
 
 OUTPUT_ARCH(riscv)
 
@@ -39,6 +40,7 @@ SECTIONS {
    */
   .vectors : ALIGN(256) {
     _text_start = .;
+    _rom_ext_immutable_start = .;
     KEEP(*(.vectors))
   } > rom_ext_flash
 
@@ -128,6 +130,7 @@ SECTIONS {
     . = ALIGN(4);
     _data_end = .;
     _data_init_end = LOADADDR(.data) + SIZEOF(.data);
+    _rom_ext_immutable_end = LOADADDR(.data) + SIZEOF(.data);
 
     /* This puts it in ram_main at runtime (for the VMA), but puts the section
      * into flash for load time (for the LMA). This is why `_data_init_*` uses
